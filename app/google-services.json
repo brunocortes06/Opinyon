@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "269952483306",
+    "firebase_url": "https://project-3054629283855362897.firebaseio.com",
+    "project_id": "project-3054629283855362897",
+    "storage_bucket": "project-3054629283855362897.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:269952483306:android:e0fd219c4b40a04f",
+        "android_client_info": {
+          "package_name": "opinyon.com.bruno.opinyon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "269952483306-7n8ngcq8cvtmqerqdgsurrr2rg24am7c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCg20yzHEtfCXOIkSFQqd8HL9ahLb92Ln0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
