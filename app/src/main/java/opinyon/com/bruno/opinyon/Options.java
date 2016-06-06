@@ -2,6 +2,8 @@ package opinyon.com.bruno.opinyon;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.RadioButton;
 
 import com.google.firebase.database.ChildEventListener;
@@ -9,7 +11,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+//TODO criar radiobuttons dinamicos
+//TODO atrelar usuário ao voto
+//TODO usar mutable
 public class Options extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
@@ -17,6 +28,8 @@ public class Options extends AppCompatActivity {
     private RadioButton vtOpt1;
     private RadioButton vtOpt2;
     private int count = 0;
+    private String[] opt = new String[20];
+    Map<String, Long> optMap = new LinkedHashMap<String, Long>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +53,19 @@ public class Options extends AppCompatActivity {
         ChildEventListener votationListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(count == 0)
-                    vtOpt1.setText(dataSnapshot.getKey());
+                try {
+                    opt[count] = dataSnapshot.getKey();
+                    optMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
 
-                if(count == 1)
-                    vtOpt2.setText(dataSnapshot.getKey());
+                    if (opt[0] !=null)
+                        vtOpt1.setText(opt[0]);
+                    if (opt[1] != null)
+                        vtOpt2.setText(opt[1]);
 
-                count = count +1;
+                    count = count + 1;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -71,4 +90,59 @@ public class Options extends AppCompatActivity {
         };
         mDatabase.addChildEventListener(votationListener);
     }
+
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.rd1:
+                if (checked) {
+                    optMap.put(optMap.keySet().toArray()[0].toString(), optMap.get(optMap.keySet().toArray()[0]) + 1);
+                    mDatabase.setValue(optMap);
+                }
+                break;
+            case R.id.rd2:
+                if (checked) {
+                    optMap.put(optMap.keySet().toArray()[1].toString(), optMap.get(optMap.keySet().toArray()[1]) + 1);
+                    mDatabase.setValue(optMap);
+                }
+                    break;
+        }
+    }
+
+//    private void onOptionClicked(DatabaseReference postRef, Map<String, Object> optMap) {
+//        postRef.runTransaction(new Transaction.Handler() {
+//            @Override
+//            public Transaction.Result doTransaction(MutableData mutableData) {
+////                Post p = mutableData.getValue(Post.class);
+////                Post p = mutableData.getValue(Post.class);
+////                if (p == null) {
+////                    return Transaction.success(mutableData);
+////                }
+//
+////                if (p.stars.containsKey(getUid())) {
+////                    // Unstar the post and remove self from stars
+////                    p.starCount = p.starCount - 1;
+////                    p.stars.remove(getUid());
+////                } else {
+////                    // Star the post and add self to stars
+////                    p.starCount = p.starCount + 1;
+////                    p.stars.put(getUid(), true);
+////                }
+//
+//                // Set value and report transaction success
+////                mutableData.setValue(p);
+//                return Transaction.success(mutableData);
+//            }
+//
+//            @Override
+//            public void onComplete(DatabaseError databaseError, boolean b,
+//                                   DataSnapshot dataSnapshot) {
+//                // Transaction completed
+////                Log.d("postTransaction:onComplete:" + databaseError);
+//            }
+//        });
+//    }
 }
