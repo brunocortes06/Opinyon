@@ -31,7 +31,6 @@ public class Votations extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             cpf = extras.getString("cpf");
-            System.out.println(cpf);
         }
 
         getVotations();
@@ -80,6 +79,7 @@ public class Votations extends AppCompatActivity {
     public void vote (View view){
         Intent i = new Intent(getApplicationContext(), Options.class);
         i.putExtra("votationOptions",votationOptions);
+        i.putExtra("cpf",cpf);
         startActivity(i);
     }
 }
