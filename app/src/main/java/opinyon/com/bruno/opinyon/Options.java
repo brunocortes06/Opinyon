@@ -1,5 +1,8 @@
 package opinyon.com.bruno.opinyon;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import opinyon.com.bruno.opinyon.util.EnumOpt;
 import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 
 //TODO criar radiobuttons dinamicos
@@ -61,11 +65,20 @@ public class Options extends AppCompatActivity {
                     opt[count] = dataSnapshot.getKey();
                     optMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
 
-                    if (opt[0] !=null)
-                        vtOpt1.setText(opt[0]);
-                    if (opt[1] != null)
-                        vtOpt2.setText(opt[1]);
-
+                    if (opt[0] !=null) {
+                        if(opt[0].equals(EnumOpt.nao.getRealName())){
+                            vtOpt1.setText(EnumOpt.nao.getShortname());
+                        }else {
+                            vtOpt1.setText(opt[0]);
+                        }
+                    }
+                    if (opt[1] !=null) {
+                        if(opt[1].equals(EnumOpt.sim.getRealName())){
+                            vtOpt2.setText(EnumOpt.sim.getShortname());
+                        }else {
+                            vtOpt2.setText(opt[1]);
+                        }
+                    }
                     count = count + 1;
                 }catch (Exception e){
                     e.printStackTrace();
@@ -104,21 +117,21 @@ public class Options extends AppCompatActivity {
             case R.id.rd1:
                 if (checked) {
                     optMap.put(optMap.keySet().toArray()[0].toString(), optMap.get(optMap.keySet().toArray()[0]) + 1);
-                    onOptionClicked(mDatabase, optMap);
+                    onOptionClicked(mDatabase, optMap, 0);
 //                        mDatabase.setValue(optMap);
                 }
                 break;
             case R.id.rd2:
                 if (checked) {
                     optMap.put(optMap.keySet().toArray()[1].toString(), optMap.get(optMap.keySet().toArray()[1]) + 1);
-                    onOptionClicked(mDatabase, optMap);
+                    onOptionClicked(mDatabase, optMap, 1);
 //                    mDatabase.setValue(optMap);
                 }
                 break;
         }
     }
 
-    private void onOptionClicked(DatabaseReference postRef, final Map<String, Long> optMap) {
+    private void onOptionClicked(DatabaseReference postRef, final Map<String, Long> optMap, final int keyNumber) {
         final boolean[] ret = {false};
         try {
             postRef.runTransaction(new Transaction.Handler() {
@@ -129,16 +142,15 @@ public class Options extends AppCompatActivity {
                         return Transaction.success(mutableData);
                     }
 
-                    if (p.voters.containsKey(cpf)) {
+//                    if (p.voters.containsKey(cpf)) {
                         // Unstar the post and remove self from stars
-                        Toast.makeText(Options.this, "Voto já computado", Toast.LENGTH_LONG).show();
-                        return Transaction.success(mutableData);
-//                    p.stars.remove(getUid());
-                    } else {
-                        p.voters.put(cpf, true);
+//                        Toast.makeText(Options.this, "Voto já computado", Toast.LENGTH_LONG).show();
+//                        return Transaction.abort();
+//                    } else {
+                        p.voters.put(cpf, optMap.keySet().toArray()[keyNumber].toString());
                         p.nao = (optMap.get(optMap.keySet().toArray()[0]));
                         p.sim = (optMap.get(optMap.keySet().toArray()[1]));
-                    }
+//                    }
 
                     // Set value and report transaction success
                     mutableData.setValue(p);
@@ -156,5 +168,24 @@ public class Options extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void createDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+// Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+// Create the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.setTitle("Você já votou, deseja alterar seu voto?");
+        dialog.show();
     }
 }

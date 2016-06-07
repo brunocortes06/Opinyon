@@ -10,7 +10,7 @@ public class VoteModelIMP {
 
     public Long sim;
     public Long nao;
-    public Map<String, Boolean> voters = new HashMap<>();
+    public Map<String, String> voters = new HashMap<>();
 
     public VoteModelIMP() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
