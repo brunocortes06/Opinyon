@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Votations" />
-        <activity android:name=".Options"></activity>
+        <activity android:name=".Options" />
+        <activity android:name=".IPChart"></activity>
     </application>
 
 </manifest>

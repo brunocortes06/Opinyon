@@ -57,6 +57,13 @@ public class Options extends AppCompatActivity {
         getOptions();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(in);
+        finish();
+    }
+
     private void getOptions() {
         ChildEventListener votationListener = new ChildEventListener() {
             @Override
@@ -142,50 +149,26 @@ public class Options extends AppCompatActivity {
                         return Transaction.success(mutableData);
                     }
 
-//                    if (p.voters.containsKey(cpf)) {
-                        // Unstar the post and remove self from stars
-//                        Toast.makeText(Options.this, "Voto já computado", Toast.LENGTH_LONG).show();
-//                        return Transaction.abort();
-//                    } else {
                         p.voters.put(cpf, optMap.keySet().toArray()[keyNumber].toString());
                         p.nao = (optMap.get(optMap.keySet().toArray()[0]));
                         p.sim = (optMap.get(optMap.keySet().toArray()[1]));
-//                    }
 
                     // Set value and report transaction success
                     mutableData.setValue(p);
-//                    mDatabase.setValue(optMap);
+                    Intent i = new Intent(getApplicationContext(), IPChart.class);
+                    i.putExtra("votationOptions", votationOptions);
+                    startActivity(i);
+                    finish();
                     return Transaction.success(mutableData);
                 }
 
                 @Override
                 public void onComplete(DatabaseError databaseError, boolean b,
                                        DataSnapshot dataSnapshot) {
-                    // Transaction completed
-//                Log.d("postTransaction:onComplete:" + databaseError);
                 }
             });
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private void createDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-// Add the buttons
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-// Create the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.setTitle("Você já votou, deseja alterar seu voto?");
-        dialog.show();
     }
 }

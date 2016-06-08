@@ -47,6 +47,13 @@ public class Votations extends AppCompatActivity {
         getVotations();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(in);
+        finish();
+    }
+
     private void getVotations(){
         try {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReferenceFromUrl("https://project-3054629283855362897.firebaseio.com/votations");
