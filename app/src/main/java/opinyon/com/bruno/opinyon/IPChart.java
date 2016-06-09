@@ -23,6 +23,7 @@ public class IPChart extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private String votationOptions;
+    private String cpf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +33,15 @@ public class IPChart extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             votationOptions = extras.getString("votationOptions");
+            cpf = extras.getString("cpf");
         }
         getData();
     }
 
     @Override
     public void onBackPressed() {
-        Intent in = new Intent(getApplicationContext(),MainActivity.class);
+        Intent in = new Intent(getApplicationContext(),Votations.class);
+        in.putExtra("cpf", cpf);
         startActivity(in);
         finish();
     }
