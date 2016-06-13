@@ -178,11 +178,19 @@ public class Votations extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                //Remover voto usando a key(cpf) para saber o voto que ele já havia feito
-                if(vm.voters.get(cpf).equals("nao")){
+                //TODO Remover voto usando a key(cpf) para saber o voto que ele já havia feito
+                if(vm.voters.get(cpf).equals(EnumOpt.nao.getRealName())){
                     vm.nao = vm.nao -1;
-                }else if(vm.voters.get(cpf).equals("sim")){
+                }else if(vm.voters.get(cpf).equals(EnumOpt.sim.getRealName())){
                     vm.sim = vm.sim -1;
+                }else if(vm.voters.get(cpf).equals(EnumOpt.bolso.getRealName())) {
+                    vm.bolso = vm.bolso - 1;
+                }else if(vm.voters.get(cpf).equals(EnumOpt.aecio.getRealName())) {
+                    vm.aecio = vm.aecio - 1;
+                }else if(vm.voters.get(cpf).equals(EnumOpt.lula.getRealName())) {
+                    vm.lula = vm.lula - 1;
+                }else if(vm.voters.get(cpf).equals(EnumOpt.marina.getRealName())) {
+                    vm.marina = vm.marina - 1;
                 }
 
                 vm.voters.remove(cpf);
