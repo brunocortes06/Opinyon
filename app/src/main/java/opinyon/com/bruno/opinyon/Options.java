@@ -19,11 +19,9 @@ import com.google.firebase.database.Transaction;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import opinyon.com.bruno.opinyon.util.EnumOpt;
 import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 
-//TODO criar radiobuttons dinamicos
-//TODO atrelar usuário ao voto
-//TODO usar mutable
 public class Options extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
@@ -81,7 +79,6 @@ public class Options extends AppCompatActivity {
 
                             optMap.put(radioButton.getTag().toString(), optMap.get(radioButton.getTag()) + 1);
                             addVotes(mDatabase, optMap, radioButton.getTag().toString());
-                            onOptionClicked(mDatabase, optMap, radioButton.getTag().toString());
                         }
                     };
                     count = count + 1;
@@ -116,51 +113,38 @@ public class Options extends AppCompatActivity {
     }
 
     private void addVotes(final DatabaseReference postRef, final Map<String, Long> optMap, final String opt) {
-        final boolean[] ret = {false};
         //TODO REMOVER VOTOS JA COMPUTADOS
         try {
             postRef.runTransaction(new Transaction.Handler() {
                 @Override
                 public Transaction.Result doTransaction(MutableData mutableData) {
-                    // Set value and report transaction success
-                    mutableData.setValue(optMap);
-                    return Transaction.success(mutableData);
-                }
+                    try {
+                        VoteModelIMP p = mutableData.getValue(VoteModelIMP.class);
+                        if (p == null) {
+                            return Transaction.success(mutableData);
+                        }
+                        //TODO tentar subistituir isso por um MAP
+//                        for (int i = 0; i < optMap.size(); i++) {
+                            p.nao = optMap.get(EnumOpt.nao.getRealName());
+                            p.sim = optMap.get(EnumOpt.sim.getRealName());
+                            p.aecio = optMap.get(EnumOpt.aecio.getRealName());
+                            p.lula = optMap.get(EnumOpt.lula.getRealName());
+                            p.marina = optMap.get(EnumOpt.marina.getRealName());
+                            p.bolso = optMap.get(EnumOpt.bolso.getRealName());
+//                            p.presidential.put(optMap.keySet().toArray()[i].toString(), optMap.get(optMap.keySet().toArray()[i]));
+//                        }
 
-                @Override
-                public void onComplete(DatabaseError databaseError, boolean b,
-                                       DataSnapshot dataSnapshot) {
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+                        p.voters.put(cpf, opt);
+                        // Set value and report transaction success
+                        mutableData.setValue(p);
 
-    private void onOptionClicked(final DatabaseReference postRef, final Map<String, Long> optMap, final String opt) {
-        final boolean[] ret = {false};
-        try {
-            postRef.runTransaction(new Transaction.Handler() {
-                @Override
-                public Transaction.Result doTransaction(MutableData mutableData) {
-                    VoteModelIMP p = mutableData.getValue(VoteModelIMP.class);
-                    if (p == null) {
-                        return Transaction.success(mutableData);
+                        Intent i = new Intent(getApplicationContext(), Votations.class);
+                        i.putExtra("cpf", cpf);
+                        startActivity(i);
+                        finish();
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
-
-                    p.voters.put(cpf, opt);
-
-                    // Set value and report transaction success
-                    mutableData.setValue(p);
-                    Intent i = new Intent(getApplicationContext(), Votations.class);
-                    i.putExtra("cpf", cpf);
-                    startActivity(i);
-                    finish();
-                    /*Intent i = new Intent(getApplicationContext(), IPChart.class);
-                    i.putExtra("votationOptions", votationOptions);
-                    i.putExtra("cpf", cpf);
-                    startActivity(i);
-                    finish();*/
                     return Transaction.success(mutableData);
                 }
 
@@ -173,5 +157,4 @@ public class Options extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 }

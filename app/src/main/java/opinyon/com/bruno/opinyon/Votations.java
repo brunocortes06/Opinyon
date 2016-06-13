@@ -65,14 +65,14 @@ public class Votations extends AppCompatActivity {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     LinearLayout linear1 = new LinearLayout(Votations.this);
                     linear1.setOrientation(LinearLayout.VERTICAL);
-                    linear1.setGravity(Gravity.CENTER);
+                    linear1.setGravity(Gravity.CENTER_HORIZONTAL);
                     Button b;
                     b = new Button(Votations.this);
                     b.setText(votationOptions);
                     b.setId(count);
                     b.setTextSize(10);
                     b.setPadding(48, 3, 48, 3);
-                    b.setTypeface(Typeface.SERIF,Typeface.BOLD_ITALIC);
+//                    b.setTypeface(Typeface.SERIF,Typeface.BOLD_ITALIC);
                     b.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
                     //Aqui atribuo dinamicamente os dados para o botão
