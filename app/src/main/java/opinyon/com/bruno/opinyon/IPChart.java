@@ -17,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import opinyon.com.bruno.opinyon.util.EnumOpt;
 import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 
 public class IPChart extends AppCompatActivity {
@@ -47,46 +48,86 @@ public class IPChart extends AppCompatActivity {
     }
 
     private void getData(){
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("votations").child(votationOptions);
+        try {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("votations").child(votationOptions);
 
-        ValueEventListener votationListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                VoteModelIMP vm = dataSnapshot.getValue(VoteModelIMP.class);
+            ValueEventListener votationListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    VoteModelIMP vm = dataSnapshot.getValue(VoteModelIMP.class);
 
-                float nao = vm.nao;
-                float sim = vm.sim;
-                float total = nao+sim;
-                nao = (nao/total)*100;
-                sim = (sim/total)*100;
-                ArrayList<BarEntry> entries = new ArrayList<>();
-                entries.add(new BarEntry(nao, 0));
-                entries.add(new BarEntry(sim, 1));
+                    if (votationOptions.equals(EnumOpt.impeachment.getRealName())) {
+                        float nao = vm.nao;
+                        float sim = vm.sim;
+                        float total = nao + sim;
+                        nao = (nao / total) * 100;
+                        sim = (sim / total) * 100;
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        entries.add(new BarEntry(nao, 0));
+                        entries.add(new BarEntry(sim, 1));
 
-                BarDataSet dataset = new BarDataSet(entries, "");
-                dataset.setColors(ColorTemplate.JOYFUL_COLORS);
+                        BarDataSet dataset = new BarDataSet(entries, "");
+                        dataset.setColors(ColorTemplate.JOYFUL_COLORS);
 
-                ArrayList<String> labels = new ArrayList<String>();
-                labels.add("Contra");
-                labels.add("A favor");
+                        ArrayList<String> labels = new ArrayList<String>();
+                        labels.add("Contra");
+                        labels.add("A favor");
 
-                BarChart chart = new BarChart(getApplicationContext());
-                chart.animateXY(2000, 2000);
-                chart.setYRange(0,100,true);
-                setContentView(chart);
+                        BarChart chart = new BarChart(getApplicationContext());
+                        chart.animateXY(2000, 2000);
+                        chart.setYRange(0, 100, true);
+                        setContentView(chart);
 
-                BarData data = new BarData(labels, dataset);
-                chart.setData(data);
+                        BarData data = new BarData(labels, dataset);
+                        chart.setData(data);
 
-                chart.setDescription("% de votos");
+                        chart.setDescription("% de votos");
+                    } else if (votationOptions.equals(EnumOpt.presidential.getRealName())) {
+                        float aecio = vm.aecio;
+                        float marina = vm.marina;
+                        float bolso = vm.bolso;
+                        float lula = vm.lula;
+                        float total = lula + bolso + marina + aecio;
+                        aecio = (aecio / total) * 100;
+                        marina = (marina / total) * 100;
+                        bolso = (bolso / total) * 100;
+                        lula = (lula / total) * 100;
+                        ArrayList<BarEntry> entries = new ArrayList<>();
+                        entries.add(new BarEntry(aecio, 0));
+                        entries.add(new BarEntry(marina, 1));
+                        entries.add(new BarEntry(bolso, 2));
+                        entries.add(new BarEntry(lula, 3));
 
-            }
+                        BarDataSet dataset = new BarDataSet(entries, "");
+                        dataset.setColors(ColorTemplate.JOYFUL_COLORS);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                        ArrayList<String> labels = new ArrayList<String>();
+                        labels.add("Aécio Neves");
+                        labels.add("Marina");
+                        labels.add("Jair Bolsonaro");
+                        labels.add("Lula");
 
-            }
-        };
-        mDatabase.addValueEventListener(votationListener);
+                        BarChart chart = new BarChart(getApplicationContext());
+                        chart.animateXY(2000, 2000);
+                        chart.setYRange(0, 100, true);
+                        setContentView(chart);
+
+                        BarData data = new BarData(labels, dataset);
+                        chart.setData(data);
+
+                        chart.setDescription("% de votos");
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mDatabase.addValueEventListener(votationListener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

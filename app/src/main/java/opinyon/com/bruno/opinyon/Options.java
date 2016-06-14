@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import opinyon.com.bruno.opinyon.util.EnumOpt;
+import opinyon.com.bruno.opinyon.util.MlModel;
 import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 
 public class Options extends AppCompatActivity {
@@ -28,8 +29,10 @@ public class Options extends AppCompatActivity {
     private String votationOptions;
     private int count = 0;
     Map<String, Long> optMap = new LinkedHashMap<String, Long>();
+    Map<String, String> nameMap = new LinkedHashMap<String, String>();
     private String cpf;
     private RadioButton radioButton;
+    private MlModel vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,62 +57,79 @@ public class Options extends AppCompatActivity {
     }
 
     private void getOptions() {
-        final RadioGroup radioGroup = new RadioGroup(this);
-        radioGroup.setOrientation(LinearLayout.VERTICAL);
+        try {
+            final RadioGroup radioGroup = new RadioGroup(this);
+            radioGroup.setOrientation(LinearLayout.VERTICAL);
 
-        ChildEventListener votationListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                try {
-                    optMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
+            ChildEventListener votationListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    try {
+                        optMap.put(dataSnapshot.getKey(), (Long) dataSnapshot.getValue());
 
-                    RadioButton rdbtn = new RadioButton(Options.this);
-                    rdbtn.setId(count);
-                    rdbtn.setText(dataSnapshot.getKey());
-                    rdbtn.setTag(dataSnapshot.getKey());
-                    radioGroup.addView(rdbtn);
-                    RadioGroup.OnCheckedChangeListener radioList = new RadioGroup.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            int selectedId = group.getCheckedRadioButtonId();
-
-                            // find the radiobutton by returned id
-                            radioButton = (RadioButton) findViewById(selectedId);
-
-
-                            optMap.put(radioButton.getTag().toString(), optMap.get(radioButton.getTag()) + 1);
-                            addVotes(mDatabase, optMap, radioButton.getTag().toString());
+                        RadioButton rdbtn = new RadioButton(Options.this);
+                        rdbtn.setId(count);
+                        if (dataSnapshot.getKey().equals(EnumOpt.sim.getRealName())) {
+                            rdbtn.setText(EnumOpt.sim.getShortname());
+                        } else if (dataSnapshot.getKey().equals(EnumOpt.nao.getRealName())) {
+                            rdbtn.setText(EnumOpt.nao.getShortname());
+                        } else if (dataSnapshot.getKey().equals(EnumOpt.aecio.getRealName())) {
+                            rdbtn.setText(EnumOpt.aecio.getShortname());
+                        } else if (dataSnapshot.getKey().equals(EnumOpt.lula.getRealName())) {
+                            rdbtn.setText(EnumOpt.lula.getShortname());
+                        } else if (dataSnapshot.getKey().equals(EnumOpt.marina.getRealName())) {
+                            rdbtn.setText(EnumOpt.marina.getShortname());
+                        } else if (dataSnapshot.getKey().equals(EnumOpt.bolso.getRealName())) {
+                            rdbtn.setText(EnumOpt.bolso.getShortname());
                         }
-                    };
-                    count = count + 1;
-                    radioGroup.setOnCheckedChangeListener(radioList);
-                }catch (Exception e){
-                    e.printStackTrace();
+//                    rdbtn.setText(dataSnapshot.getKey());
+                        rdbtn.setTag(dataSnapshot.getKey());
+                        radioGroup.addView(rdbtn);
+                        RadioGroup.OnCheckedChangeListener radioList = new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                int selectedId = group.getCheckedRadioButtonId();
+
+                                // find the radiobutton by returned id
+                                radioButton = (RadioButton) findViewById(selectedId);
+
+
+                                optMap.put(radioButton.getTag().toString(), optMap.get(radioButton.getTag()) + 1);
+                                addVotes(mDatabase, optMap, radioButton.getTag().toString());
+                            }
+                        };
+                        count = count + 1;
+                        radioGroup.setOnCheckedChangeListener(radioList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-            }
+                }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
-        mDatabase.addChildEventListener(votationListener);
-        ((ViewGroup) findViewById(R.id.radiogroup)).addView(radioGroup);
+                }
+            };
+            mDatabase.addChildEventListener(votationListener);
+            ((ViewGroup) findViewById(R.id.radiogroup)).addView(radioGroup);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void addVotes(final DatabaseReference postRef, final Map<String, Long> optMap, final String opt) {
@@ -138,10 +158,16 @@ public class Options extends AppCompatActivity {
                         // Set value and report transaction success
                         mutableData.setValue(p);
 
-                        Intent i = new Intent(getApplicationContext(), Votations.class);
+                        Intent i = new Intent(getApplicationContext(), IPChart.class);
                         i.putExtra("cpf", cpf);
+                        i.putExtra("votationOptions", votationOptions);
                         startActivity(i);
                         finish();
+
+//                        Intent i = new Intent(getApplicationContext(), Votations.class);
+//                        i.putExtra("cpf", cpf);
+//                        startActivity(i);
+//                        finish();
                     }catch (Exception e){
                         e.printStackTrace();
                     }

@@ -12,6 +12,9 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:ellipsize="start"
+        android:gravity="center_horizontal"
         android:inputType="number"
         android:hint="CPF"
         android:ems="10"

@@ -2,7 +2,6 @@ package opinyon.com.bruno.opinyon;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -148,70 +147,78 @@ public class Votations extends AppCompatActivity {
     }
 
     private void checkVote(final String votation) {
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("votations").child(votation);
+        try {
+            mDatabase = FirebaseDatabase.getInstance().getReference().child("votations").child(votation);
 
-        ValueEventListener votationListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                VoteModelIMP vm = dataSnapshot.getValue(VoteModelIMP.class);
+            ValueEventListener votationListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    VoteModelIMP vm = dataSnapshot.getValue(VoteModelIMP.class);
 
-                if (vm.voters.containsKey(cpf)) {
-                    String voto = vm.voters.get(cpf);
-                    createDialog(vm, voto, mDatabase);
-                }else{
+                    if (vm.voters.containsKey(cpf)) {
+                        String voto = vm.voters.get(cpf);
+                        createDialog(vm, voto, mDatabase);
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), Options.class);
+                        i.putExtra("votationOptions", votation);
+                        i.putExtra("cpf", cpf);
+                        startActivity(i);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mDatabase.addValueEventListener(votationListener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void createDialog(final VoteModelIMP vm, final String voto, final DatabaseReference mDatabase) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    //TODO Remover voto usando a key(cpf) para saber o voto que ele já havia feito
+                    if (vm.voters.get(cpf).equals(EnumOpt.nao.getRealName())) {
+                        vm.nao = vm.nao - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.sim.getRealName())) {
+                        vm.sim = vm.sim - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.bolso.getRealName())) {
+                        vm.bolso = vm.bolso - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.aecio.getRealName())) {
+                        vm.aecio = vm.aecio - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.lula.getRealName())) {
+                        vm.lula = vm.lula - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.marina.getRealName())) {
+                        vm.marina = vm.marina - 1;
+                    }
+
+                    vm.voters.remove(cpf);
+
+                    mDatabase.setValue(vm);
+
                     Intent i = new Intent(getApplicationContext(), Options.class);
-                    i.putExtra("votationOptions", votation);
+                    i.putExtra("votationOptions", votationOptions);
                     i.putExtra("cpf", cpf);
                     startActivity(i);
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        mDatabase.addValueEventListener(votationListener);
-    }
-
-    private void createDialog(final VoteModelIMP vm, final String voto, final DatabaseReference mDatabase){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //TODO Remover voto usando a key(cpf) para saber o voto que ele já havia feito
-                if(vm.voters.get(cpf).equals(EnumOpt.nao.getRealName())){
-                    vm.nao = vm.nao -1;
-                }else if(vm.voters.get(cpf).equals(EnumOpt.sim.getRealName())){
-                    vm.sim = vm.sim -1;
-                }else if(vm.voters.get(cpf).equals(EnumOpt.bolso.getRealName())) {
-                    vm.bolso = vm.bolso - 1;
-                }else if(vm.voters.get(cpf).equals(EnumOpt.aecio.getRealName())) {
-                    vm.aecio = vm.aecio - 1;
-                }else if(vm.voters.get(cpf).equals(EnumOpt.lula.getRealName())) {
-                    vm.lula = vm.lula - 1;
-                }else if(vm.voters.get(cpf).equals(EnumOpt.marina.getRealName())) {
-                    vm.marina = vm.marina - 1;
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                    Toast.makeText(Votations.this, "Voto já computado", Toast.LENGTH_LONG).show();
                 }
-
-                vm.voters.remove(cpf);
-
-                mDatabase.setValue(vm);
-
-                Intent i = new Intent(getApplicationContext(), Options.class);
-                i.putExtra("votationOptions", votationOptions);
-                i.putExtra("cpf", cpf);
-                startActivity(i);
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-                Toast.makeText(Votations.this, "Voto já computado", Toast.LENGTH_LONG).show();
-            }
-        });
+            });
 // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.setTitle("Você já votou, deseja alterar seu voto?");
-        dialog.show();
+            AlertDialog dialog = builder.create();
+            dialog.setTitle("Você já votou, deseja alterar seu voto?");
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
