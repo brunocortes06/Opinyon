@@ -8,7 +8,7 @@ public enum EnumOpt {
     sim		        ("sim","Sim",	0),
     nao		        ("nao","Não",	1),
     impeachment		("impeachment","Você é a favor do impeachment?",	2),
-    presidential	("presidential","Eleição Presidencial",	3),
+    presidential	("presidential","Pesquisa Eleição Presidencial",	3),
     lula	        ("lula","Luiz Inácio Lula da Silva",	4),
     aecio	        ("aecio","Aécio Neves",	5),
     bolso	        ("bolso","Jair Bolssonaro",	6),

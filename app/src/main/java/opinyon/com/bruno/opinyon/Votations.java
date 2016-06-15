@@ -1,15 +1,23 @@
 package opinyon.com.bruno.opinyon;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -52,7 +60,6 @@ public class Votations extends AppCompatActivity {
     }
 
     private void getVotations(){
-
         final LinearLayout linearlayout = new LinearLayout(this);
         linearlayout.setOrientation(LinearLayout.VERTICAL);
         linearlayout.setGravity(Gravity.CENTER);
@@ -67,9 +74,17 @@ public class Votations extends AppCompatActivity {
                     linear1.setGravity(Gravity.CENTER_HORIZONTAL);
                     Button b;
                     b = new Button(Votations.this);
+                    b.setTextColor( getResources().getColor(R.color.colorTextButtons));
                     b.setText(votationOptions);
+                    b.setTextSize(TypedValue.COMPLEX_UNIT_SP,20F);
+
+                    final int sdk = android.os.Build.VERSION.SDK_INT;
+                    if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        b.setBackgroundDrawable( getResources().getDrawable(R.drawable.buttonshape) );
+                    } else {
+                        b.setBackground( getResources().getDrawable(R.drawable.buttonshape));
+                    }
                     b.setId(count);
-                    b.setTextSize(10);
                     b.setPadding(48, 3, 48, 3);
 //                    b.setTypeface(Typeface.SERIF,Typeface.BOLD_ITALIC);
                     b.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -85,7 +100,9 @@ public class Votations extends AppCompatActivity {
                     }
 
                     LinearLayout.LayoutParams ll = (LinearLayout.LayoutParams)b.getLayoutParams();
+                    ll.setMargins(0, 30, 0, 0);
                     ll.gravity = Gravity.CENTER;
+                    b.setTransformationMethod(null);
                     b.setLayoutParams(ll);
 
                     linear1.addView(b);

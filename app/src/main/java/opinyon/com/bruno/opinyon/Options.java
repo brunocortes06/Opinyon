@@ -82,7 +82,10 @@ public class Options extends AppCompatActivity {
                         } else if (dataSnapshot.getKey().equals(EnumOpt.bolso.getRealName())) {
                             rdbtn.setText(EnumOpt.bolso.getShortname());
                         }
-//                    rdbtn.setText(dataSnapshot.getKey());
+                        RadioGroup.LayoutParams params
+                                = new RadioGroup.LayoutParams(Options.this, null);
+                        params.setMargins(10, 80, 10, 0);
+                        rdbtn.setLayoutParams(params);
                         rdbtn.setTag(dataSnapshot.getKey());
                         radioGroup.addView(rdbtn);
                         RadioGroup.OnCheckedChangeListener radioList = new RadioGroup.OnCheckedChangeListener() {
