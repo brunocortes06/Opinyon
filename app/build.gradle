@@ -37,6 +37,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:9.0.2'
     compile 'com.google.android.gms:play-services-auth:9.0.2'
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
+    compile 'com.google.firebase:firebase-ads:9.0.2'
     compile 'org.quanqi:mpandroidchart:1.7.5'
 }
 apply plugin: 'com.google.gms.google-services'

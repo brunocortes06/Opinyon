@@ -20,6 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,12 +41,14 @@ public class Votations extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private int count = 0;
     private boolean voteSelectd = false;
+    private AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_voatations);
 
+        getAds();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -50,6 +56,19 @@ public class Votations extends AppCompatActivity {
         }
 
         getVotations();
+    }
+
+    private void getAds() {
+        //        AdView mAdView = (AdView) findViewById(R.id.adView);
+        adView = new AdView(this);
+        adView.setAdUnitId("ca-app-pub-9461541042807906~4104560001");
+        adView.setAdSize(AdSize.BANNER);
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+//        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override
@@ -61,6 +80,7 @@ public class Votations extends AppCompatActivity {
 
     private void getVotations(){
         final LinearLayout linearlayout = new LinearLayout(this);
+        linearlayout.addView(adView);
         linearlayout.setOrientation(LinearLayout.VERTICAL);
         linearlayout.setGravity(Gravity.CENTER);
         linearlayout.setPadding(16,16,16,16);
