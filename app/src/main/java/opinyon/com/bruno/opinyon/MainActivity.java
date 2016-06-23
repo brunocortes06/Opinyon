@@ -7,12 +7,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -40,7 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
         enter = (Button) findViewById(R.id.enter);
 
+    }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     public void enter (View view)
@@ -57,11 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), Votations.class);
                 i.putExtra("cpf",cpfNoMask);
                 startActivity(i);
+                finish();
 
                 //Votations.start(this);
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else{
+            Toast.makeText(MainActivity.this, "CPF inválido", Toast.LENGTH_LONG).show();
         }
     }
 }

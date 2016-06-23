@@ -200,6 +200,7 @@ public class Votations extends AppCompatActivity {
                         i.putExtra("votationOptions", votation);
                         i.putExtra("cpf", cpf);
                         startActivity(i);
+                        finish();
                     }
                 }
 
