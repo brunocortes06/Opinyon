@@ -12,7 +12,8 @@ public enum EnumOpt {
     lula	        ("lula","Luiz Inácio Lula da Silva",	4),
     aecio	        ("aecio","Aécio Neves",	5),
     bolso	        ("bolso","Jair Bolssonaro",	6),
-    marina	        ("marina","Marina",	7),
+    marina	        ("marina","Marina Silva",	7),
+    moro	        ("moro","Sérgio Moro",	7),
             ;
 
     private String realName;

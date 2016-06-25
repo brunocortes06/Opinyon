@@ -81,6 +81,8 @@ public class Options extends AppCompatActivity {
                             rdbtn.setText(EnumOpt.marina.getShortname());
                         } else if (dataSnapshot.getKey().equals(EnumOpt.bolso.getRealName())) {
                             rdbtn.setText(EnumOpt.bolso.getShortname());
+                        }else if (dataSnapshot.getKey().equals(EnumOpt.moro.getRealName())) {
+                            rdbtn.setText(EnumOpt.moro.getShortname());
                         }
                         RadioGroup.LayoutParams params
                                 = new RadioGroup.LayoutParams(Options.this, null);
@@ -154,6 +156,7 @@ public class Options extends AppCompatActivity {
                             p.lula = optMap.get(EnumOpt.lula.getRealName());
                             p.marina = optMap.get(EnumOpt.marina.getRealName());
                             p.bolso = optMap.get(EnumOpt.bolso.getRealName());
+                            p.moro = optMap.get(EnumOpt.moro.getRealName());
 //                            p.presidential.put(optMap.keySet().toArray()[i].toString(), optMap.get(optMap.keySet().toArray()[i]));
 //                        }
 
@@ -167,10 +170,6 @@ public class Options extends AppCompatActivity {
                         startActivity(i);
                         finish();
 
-//                        Intent i = new Intent(getApplicationContext(), Votations.class);
-//                        i.putExtra("cpf", cpf);
-//                        startActivity(i);
-//                        finish();
                     }catch (Exception e){
                         e.printStackTrace();
                     }

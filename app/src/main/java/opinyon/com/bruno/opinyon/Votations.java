@@ -42,6 +42,7 @@ public class Votations extends AppCompatActivity {
     private int count = 0;
     private boolean voteSelectd = false;
     private AdView adView;
+    private LinearLayout linearlayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +57,8 @@ public class Votations extends AppCompatActivity {
         }
 
         getVotations();
-    }
 
-    private void getAds() {
-        //        AdView mAdView = (AdView) findViewById(R.id.adView);
-        adView = new AdView(this);
-        adView.setAdUnitId("ca-app-pub-9461541042807906~4104560001");
-        adView.setAdSize(AdSize.BANNER);
-
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-//        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        showAds();
     }
 
     @Override
@@ -79,8 +69,8 @@ public class Votations extends AppCompatActivity {
     }
 
     private void getVotations(){
-        final LinearLayout linearlayout = new LinearLayout(this);
-        linearlayout.addView(adView);
+        linearlayout = new LinearLayout(this);
+        //linearlayout.addView(adView);
         linearlayout.setOrientation(LinearLayout.VERTICAL);
         linearlayout.setGravity(Gravity.CENTER);
         linearlayout.setPadding(16,16,16,16);
@@ -127,6 +117,7 @@ public class Votations extends AppCompatActivity {
 
                     linear1.addView(b);
                     linearlayout.addView(linear1);
+
                     count++;
 
                     View.OnClickListener clicks=new View.OnClickListener() {
@@ -200,6 +191,7 @@ public class Votations extends AppCompatActivity {
                         i.putExtra("votationOptions", votation);
                         i.putExtra("cpf", cpf);
                         startActivity(i);
+                        finish();
                     }
                 }
 
@@ -232,6 +224,8 @@ public class Votations extends AppCompatActivity {
                         vm.lula = vm.lula - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.marina.getRealName())) {
                         vm.marina = vm.marina - 1;
+                    } else if (vm.voters.get(cpf).equals(EnumOpt.moro.getRealName())) {
+                        vm.moro = vm.moro - 1;
                     }
 
                     vm.voters.remove(cpf);
@@ -257,5 +251,27 @@ public class Votations extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void showAds() {
+        LinearLayout linear2 = new LinearLayout(Votations.this);
+        linear2.setOrientation(LinearLayout.VERTICAL);
+        linear2.addView(adView);
+        linearlayout.addView(linear2);
+    }
+
+    private void getAds() {
+        //        AdView mAdView = (AdView) findViewById(R.id.adView);
+        adView = new AdView(this);
+        adView.setAdUnitId("ca-app-pub-9461541042807906/6778824808");
+        //adView.setAdUnitId("ca-app-pub-9461541042807906~4104560001");
+        adView.setAdSize(AdSize.BANNER);
+
+        AdRequest adRequest = new AdRequest.Builder()
+              //  .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+//        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 }

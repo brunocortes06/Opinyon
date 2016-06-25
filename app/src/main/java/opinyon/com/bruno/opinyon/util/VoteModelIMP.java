@@ -14,18 +14,20 @@ public class VoteModelIMP {
     public Long bolso;
     public Long lula;
     public Long marina;
+    public Long moro;
     public Map<String, String> voters = new HashMap<>();
 
     public VoteModelIMP() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public VoteModelIMP(Long sim, Long nao, Long aecio, Long bolso, Long lula, Long marina) {
+    public VoteModelIMP(Long sim, Long nao, Long aecio, Long bolso, Long lula, Long marina, Long moro) {
         this.sim = sim;
         this.nao = nao;
         this.aecio = aecio;
         this.bolso = bolso;
         this.lula = lula;
         this.marina = marina;
+        this.moro = moro;
     }
 }

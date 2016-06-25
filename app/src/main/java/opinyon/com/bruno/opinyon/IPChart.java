@@ -87,25 +87,29 @@ public class IPChart extends AppCompatActivity {
                         float marina = vm.marina;
                         float bolso = vm.bolso;
                         float lula = vm.lula;
+                        float moro = vm.moro;
                         float total = lula + bolso + marina + aecio;
                         aecio = (aecio / total) * 100;
                         marina = (marina / total) * 100;
                         bolso = (bolso / total) * 100;
                         lula = (lula / total) * 100;
+                        moro = (moro / total) * 100;
                         ArrayList<BarEntry> entries = new ArrayList<>();
                         entries.add(new BarEntry(aecio, 0));
                         entries.add(new BarEntry(marina, 1));
                         entries.add(new BarEntry(bolso, 2));
                         entries.add(new BarEntry(lula, 3));
+                        entries.add(new BarEntry(moro, 4));
 
                         BarDataSet dataset = new BarDataSet(entries, "");
                         dataset.setColors(ColorTemplate.JOYFUL_COLORS);
 
                         ArrayList<String> labels = new ArrayList<String>();
-                        labels.add("Aécio Neves");
+                        labels.add("Aécio");
                         labels.add("Marina");
-                        labels.add("Jair Bolsonaro");
+                        labels.add("Bolsonaro");
                         labels.add("Lula");
+                        labels.add("Moro");
 
                         BarChart chart = new BarChart(getApplicationContext());
                         chart.animateXY(2000, 2000);
