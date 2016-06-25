@@ -8,8 +8,8 @@ android {
         applicationId "opinyon.com.bruno.opinyon"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.0"
+        versionCode 7
+        versionName "1.1"
     }
     signingConfigs {
         release {
