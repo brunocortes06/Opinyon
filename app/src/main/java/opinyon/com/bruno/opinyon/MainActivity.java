@@ -12,8 +12,6 @@ import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -41,7 +39,16 @@ public class MainActivity extends AppCompatActivity {
 
         enter = (Button) findViewById(R.id.enter);
 
+    }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), Votations.class);
                 i.putExtra("cpf",cpfNoMask);
                 startActivity(i);
+                finish();
 
                 //Votations.start(this);
             }catch (Exception e){
