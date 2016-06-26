@@ -25,6 +25,11 @@ public class IPChart extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String votationOptions;
     private String cpf;
+    private float aecio =0;
+    private float marina =0;
+    private float lula =0;
+    private float bolso =0;
+    private float moro =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,11 +88,16 @@ public class IPChart extends AppCompatActivity {
 
                         chart.setDescription("% de votos");
                     } else if (votationOptions.equals(EnumOpt.presidential.getRealName())) {
-                        float aecio = vm.aecio;
-                        float marina = vm.marina;
-                        float bolso = vm.bolso;
-                        float lula = vm.lula;
-                        float moro = vm.moro;
+                        if(vm.aecio != null)
+                            aecio = vm.aecio;
+                        if(vm.marina != null)
+                            marina = vm.marina;
+                        if(vm.bolso!= null)
+                            bolso = vm.bolso;
+                        if(vm.lula != null)
+                            lula = vm.lula;
+                        if(vm.moro != null)
+                            moro = vm.moro;
                         float total = lula + bolso + marina + aecio;
                         aecio = (aecio / total) * 100;
                         marina = (marina / total) * 100;

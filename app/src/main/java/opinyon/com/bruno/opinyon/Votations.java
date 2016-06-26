@@ -126,14 +126,14 @@ public class Votations extends AppCompatActivity {
 
                             switch(v.getId())
                             {
-                                case 0: System.out.println("FIRST");
+                                case 0:
                                     if(!voteSelectd) {
                                         voteSelectd = true;
                                         checkVote(EnumOpt.impeachment.getRealName());
                                     }
                                     break;
 
-                                case 1: System.out.println("FOURTH");
+                                case 1:
                                     if(!voteSelectd) {
                                         voteSelectd = true;
                                         checkVote(EnumOpt.presidential.getRealName());
@@ -213,19 +213,26 @@ public class Votations extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     //TODO Remover voto usando a key(cpf) para saber o voto que ele já havia feito
                     if (vm.voters.get(cpf).equals(EnumOpt.nao.getRealName())) {
-                        vm.nao = vm.nao - 1;
+                        if(vm.nao > 0)
+                            vm.nao = vm.nao - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.sim.getRealName())) {
-                        vm.sim = vm.sim - 1;
+                        if(vm.sim > 0)
+                            vm.sim = vm.sim - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.bolso.getRealName())) {
-                        vm.bolso = vm.bolso - 1;
+                        if(vm.bolso > 0)
+                            vm.bolso = vm.bolso - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.aecio.getRealName())) {
-                        vm.aecio = vm.aecio - 1;
+                        if(vm.aecio > 0)
+                            vm.aecio = vm.aecio - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.lula.getRealName())) {
-                        vm.lula = vm.lula - 1;
+                        if(vm.lula > 0)
+                            vm.lula = vm.lula - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.marina.getRealName())) {
-                        vm.marina = vm.marina - 1;
+                        if(vm.marina > 0)
+                            vm.marina = vm.marina - 1;
                     } else if (vm.voters.get(cpf).equals(EnumOpt.moro.getRealName())) {
-                        vm.moro = vm.moro - 1;
+                        if(vm.moro > 0)
+                            vm.moro = vm.moro - 1;
                     }
 
                     vm.voters.remove(cpf);
