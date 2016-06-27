@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,13 +27,14 @@ import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 public class Options extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseML;
     private String votationOptions;
     private int count = 0;
     Map<String, Long> optMap = new LinkedHashMap<String, Long>();
     Map<String, String> nameMap = new LinkedHashMap<String, String>();
     private String cpf;
     private RadioButton radioButton;
-    private MlModel vm;
+    private MlModel ml;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,8 @@ public class Options extends AppCompatActivity {
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("votations").child(votationOptions);
-        getOptions();
+
+        getML();
     }
 
     @Override
@@ -69,21 +72,22 @@ public class Options extends AppCompatActivity {
 
                         RadioButton rdbtn = new RadioButton(Options.this);
                         rdbtn.setId(count);
-                        if (dataSnapshot.getKey().equals(EnumOpt.sim.getRealName())) {
-                            rdbtn.setText(EnumOpt.sim.getShortname());
-                        } else if (dataSnapshot.getKey().equals(EnumOpt.nao.getRealName())) {
-                            rdbtn.setText(EnumOpt.nao.getShortname());
-                        } else if (dataSnapshot.getKey().equals(EnumOpt.aecio.getRealName())) {
-                            rdbtn.setText(EnumOpt.aecio.getShortname());
-                        } else if (dataSnapshot.getKey().equals(EnumOpt.lula.getRealName())) {
-                            rdbtn.setText(EnumOpt.lula.getShortname());
-                        } else if (dataSnapshot.getKey().equals(EnumOpt.marina.getRealName())) {
-                            rdbtn.setText(EnumOpt.marina.getShortname());
-                        } else if (dataSnapshot.getKey().equals(EnumOpt.bolso.getRealName())) {
-                            rdbtn.setText(EnumOpt.bolso.getShortname());
-                        }else if (dataSnapshot.getKey().equals(EnumOpt.moro.getRealName())) {
-                            rdbtn.setText(EnumOpt.moro.getShortname());
-                        }
+                        rdbtn.setText(ml.ml.get(dataSnapshot.getKey()));
+//                        if (dataSnapshot.getKey().equals(EnumOpt.sim.getRealName())) {
+//                            rdbtn.setText(EnumOpt.sim.getShortname());
+//                        } else if (dataSnapshot.getKey().equals(EnumOpt.nao.getRealName())) {
+//                            rdbtn.setText(EnumOpt.nao.getShortname());
+//                        } else if (dataSnapshot.getKey().equals(EnumOpt.aecio.getRealName())) {
+//                            rdbtn.setText(EnumOpt.aecio.getShortname());
+//                        } else if (dataSnapshot.getKey().equals(EnumOpt.lula.getRealName())) {
+//                            rdbtn.setText(EnumOpt.lula.getShortname());
+//                        } else if (dataSnapshot.getKey().equals(EnumOpt.marina.getRealName())) {
+//                            rdbtn.setText(EnumOpt.marina.getShortname());
+//                        } else if (dataSnapshot.getKey().equals(EnumOpt.bolso.getRealName())) {
+//                            rdbtn.setText(EnumOpt.bolso.getShortname());
+//                        }else if (dataSnapshot.getKey().equals(EnumOpt.moro.getRealName())) {
+//                            rdbtn.setText(EnumOpt.moro.getShortname());
+//                        }
                         RadioGroup.LayoutParams params
                                 = new RadioGroup.LayoutParams(Options.this, null);
                         params.setMargins(10, 80, 10, 0);
@@ -181,6 +185,31 @@ public class Options extends AppCompatActivity {
                                        DataSnapshot dataSnapshot) {
                 }
             });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void getML() {
+        try {
+            mDatabaseML = FirebaseDatabase.getInstance().getReference();
+
+            ValueEventListener votationListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ml = dataSnapshot.getValue(MlModel.class);
+
+                    if (ml.ml.size() > 0) {
+                        getOptions();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mDatabaseML.addValueEventListener(votationListener);
         }catch (Exception e){
             e.printStackTrace();
         }

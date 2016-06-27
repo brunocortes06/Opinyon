@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import opinyon.com.bruno.opinyon.util.EnumOpt;
+import opinyon.com.bruno.opinyon.util.MlModel;
 import opinyon.com.bruno.opinyon.util.VoteModelIMP;
 
 public class Votations extends AppCompatActivity {
@@ -43,6 +44,8 @@ public class Votations extends AppCompatActivity {
     private boolean voteSelectd = false;
     private AdView adView;
     private LinearLayout linearlayout;
+    private DatabaseReference mDatabaseML;
+    private MlModel ml;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +58,32 @@ public class Votations extends AppCompatActivity {
         if (extras != null) {
             cpf = extras.getString("cpf");
         }
+        getML();
+    }
 
-        getVotations();
+    private void getML() {
+        try {
+            mDatabaseML = FirebaseDatabase.getInstance().getReference();
 
-        showAds();
+            ValueEventListener votationListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    ml = dataSnapshot.getValue(MlModel.class);
+
+                    if (ml.ml.size() > 0) {
+                        getVotations();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            mDatabaseML.addValueEventListener(votationListener);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -70,11 +95,11 @@ public class Votations extends AppCompatActivity {
 
     private void getVotations(){
         linearlayout = new LinearLayout(this);
-        //linearlayout.addView(adView);
         linearlayout.setOrientation(LinearLayout.VERTICAL);
         linearlayout.setGravity(Gravity.CENTER);
         linearlayout.setPadding(16,16,16,16);
         try {
+            linearlayout.addView(adView);
             DatabaseReference ref = FirebaseDatabase.getInstance().getReferenceFromUrl("https://project-3054629283855362897.firebaseio.com/votations");
             ChildEventListener votationListener = new ChildEventListener() {
                 @Override
@@ -85,7 +110,12 @@ public class Votations extends AppCompatActivity {
                     Button b;
                     b = new Button(Votations.this);
                     b.setTextColor( getResources().getColor(R.color.colorTextButtons));
-                    b.setText(votationOptions);
+
+                    //Aqui atribuo dinamicamente os dados para o botão
+                    votationOptions = dataSnapshot.getKey().toString();
+                    if(ml.ml.size() > 0)
+                        b.setText(ml.ml.get(votationOptions));
+
                     b.setTextSize(TypedValue.COMPLEX_UNIT_SP,20F);
 
                     final int sdk = android.os.Build.VERSION.SDK_INT;
@@ -99,15 +129,14 @@ public class Votations extends AppCompatActivity {
 //                    b.setTypeface(Typeface.SERIF,Typeface.BOLD_ITALIC);
                     b.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                    //Aqui atribuo dinamicamente os dados para o botão
-                    votationOptions = dataSnapshot.getKey().toString();
-                    if(votationOptions.equals(EnumOpt.impeachment.getRealName())){
-                        b.setText(EnumOpt.impeachment.getShortname());
-                    }else if(votationOptions.equals(EnumOpt.presidential.getRealName())) {
-                        b.setText(EnumOpt.presidential.getShortname());
-                    }else {
-                        b.setText(votationOptions);
-                    }
+
+//                    if(votationOptions.equals(EnumOpt.impeachment.getRealName())){
+//                        b.setText(EnumOpt.impeachment.getShortname());
+//                    }else if(votationOptions.equals(EnumOpt.presidential.getRealName())) {
+//                        b.setText(EnumOpt.presidential.getShortname());
+//                    }else {
+//                        b.setText(votationOptions);
+//                    }
 
                     LinearLayout.LayoutParams ll = (LinearLayout.LayoutParams)b.getLayoutParams();
                     ll.setMargins(0, 30, 0, 0);
@@ -117,7 +146,6 @@ public class Votations extends AppCompatActivity {
 
                     linear1.addView(b);
                     linearlayout.addView(linear1);
-
                     count++;
 
                     View.OnClickListener clicks=new View.OnClickListener() {
@@ -261,12 +289,12 @@ public class Votations extends AppCompatActivity {
     }
 
 
-    private void showAds() {
-        LinearLayout linear2 = new LinearLayout(Votations.this);
-        linear2.setOrientation(LinearLayout.VERTICAL);
-        linear2.addView(adView);
-        linearlayout.addView(linear2);
-    }
+//    private void showAds() {
+//        LinearLayout linear2 = new LinearLayout(Votations.this);
+//        linear2.setOrientation(LinearLayout.VERTICAL);
+//        linear2.addView(adView);
+//        linearlayout.addView(linear2);
+//    }
 
     private void getAds() {
         //        AdView mAdView = (AdView) findViewById(R.id.adView);
@@ -276,7 +304,7 @@ public class Votations extends AppCompatActivity {
         adView.setAdSize(AdSize.BANNER);
 
         AdRequest adRequest = new AdRequest.Builder()
-              //  .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //  .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
 //        AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
